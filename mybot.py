@@ -25,11 +25,11 @@ if __name__ == '__main__':
     while True:
         try:
             c, conn = connect_to_database()
-            subject = "Check"
-            message = "Hi"
             reddit = connect_to_reddit()
+            i=0
             for comment in reddit.subreddit("neovim").comments(limit=100):
-                print(comment.author)
+                i+=1
+                print(i,comment.author)
                 add_user_to_database(c, conn, comment.author.name)
 
         except Exception as e:

@@ -20,4 +20,4 @@ client_secret = '9uLX0_70M_rY8I5ijVJwAIJW4Qc'
 
 # This should be a unique indentifier, as shown in the example below. 
 # You can keep it as-is or change it. It doesn't really matter.
-user_agent = 'A script that messages users that have opted-in to this messaging service.'
+user_agent = 'A script that messages all users who have commented in a subreddit.'
