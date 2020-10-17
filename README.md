@@ -1,4 +1,4 @@
-# Reddit Bulk Messager
+# Reddit DM Bot
 
 *Messages users that have opted-in to a "Get notified of new posts"-type newsletter.*
 *Misuse of this script will probably lead to your account being banned.*
