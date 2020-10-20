@@ -8,7 +8,7 @@ messageFooter = ('\n\n---\n\n^This ^message ^was ^sent ^by ^a ^script. ^If ^ther
                  .format(config.main_account))
 
 
-def connect_to_database(): # Connects to the database
+def connect_to_database():  # Connects to the database
     conn = sqlite3.connect('Subscriber List.db')
     c = conn.cursor()
     c.execute('CREATE TABLE IF NOT EXISTS Subscribers(Username)')
@@ -16,13 +16,14 @@ def connect_to_database(): # Connects to the database
     return c, conn
 
 
-def connect_to_reddit(): # Connects to Reddit account
-    reddit = praw.Reddit(username = config.username, password = config.password, client_id = config.client_id,
-                         client_secret = config.client_secret, user_agent = config.user_agent)
+def connect_to_reddit():  # Connects to Reddit account
+    reddit = praw.Reddit(username=config.username, password=config.password, client_id=config.client_id,
+                         client_secret=config.client_secret, user_agent=config.user_agent)
     return reddit
 
 
-def get_subscribed_users(c, conn): # Gets a list of subscribed users that it needs to message
+# Gets a list of subscribed users that it needs to message
+def get_subscribed_users(c, conn):
     subscribers = set()
     c.execute('SELECT Username FROM Subscribers')
     for username in c.fetchall():
@@ -30,16 +31,17 @@ def get_subscribed_users(c, conn): # Gets a list of subscribed users that it nee
     return subscribers
 
 
-def get_message_info(): # Takes the Message Subject and Message Body as input from the user
+def get_message_info():  # Takes the Message Subject and Message Body as input from the user
     while True:
         os.system('CLS')
         print('You are currently unable to add new paragraphs to your message, so keep that in mind.')
         print('Also, if you make a mistake, you will need to write the whole thing again, so check before you press enter.')
         print('You will be prompted for confirmation after you enter your Message Subject and Message Body.\n')
-        message_subject = input('Discussion about the current social media ')
-        message_body = input('Hi mind if we have a chat about the social media you like ')
+        message_subject = 'Make better friends!'
+        message_body = 'Hey, I saw your post on r/privacy, and I thought you might be interested in this! We are building a social media incentivized around your closest relationships, not your attention. It is a communication first social media for your closest friends only (limit of 25 friends). Check it out, I would love to get your feedback! https://joinoval.com'
         os.system('CLS')
-        print('Your message subject:\n"{}"\n\nYour message body:\n"{}"\n\n'.format(message_subject, message_body))
+        print('Your message subject:\n"{}"\n\nYour message body:\n"{}"\n\n'.format(
+            message_subject, message_body))
         confirmation = input('Is this correct? Y/N > ').lower()
         if confirmation == 'y':
             return message_subject, message_body
@@ -47,13 +49,31 @@ def get_message_info(): # Takes the Message Subject and Message Body as input fr
             continue
 
 
-def send_message(reddit, message_subject, message_body, subscribers): # Sends the messages to the subscribed users
+def deleteUser(user):
+    conn = sqlite3.connect('Subscriber List.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM subscribers WHERE username = ?', (user,))
+    conn.commit()
+
+
+# Sends the messages to the subscribed users
+def send_message(reddit, message_subject, message_body, subscribers):
+    i = 0
     for user in subscribers:
+        i += 1
         try:
-            reddit.redditor(user).message(message_subject, message_body)
+            if(i % 9 == 0):
+                print('Sleeping 4 mins')
+                time.sleep(240)
+            else:
+                print(i, user)
+                reddit.redditor(user).message(message_subject, message_body)
+                deleteUser(user)
+
         except Exception as e:
             print('System warning - '+str(e))
             pass
+
 
 def main():
     c, conn = connect_to_database()
